@@ -6,30 +6,32 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>寻找线段散点里的中心点</title>
     <style>
-        html, body {
+        html,
+        body {
             margin: 0;
             padding: 0;
         }
-        h1, h2 {
+
+        h1,
+        h2 {
             text-align: center
         }
 
         canvas {
-            user-select:none
+            user-select: none
         }
-
     </style>
 </head>
 
 <body>
     <h1>寻找线段散点里的中心点</h1>
     <h2>点击画布区域设置，重新设置散点位置</h2>
-    <canvas id="canvas" width="500" height="500" style="display:block; margin: 0 auto; background: #efefef"></canvas>
+    <canvas id="canvas" width="500" height="500" style="display:block; margin: 0 auto; background: #efefef" onselectstart="return false"></canvas>
     <script>
         (function () {
             var canvas = document.getElementById('canvas')
             var ctx = canvas.getContext('2d')
-            
+
             canvas.width = Math.min(window.innerWidth - 20, 500)
 
             function generate_random_numbers_around_target_number(target, amount, range) {
