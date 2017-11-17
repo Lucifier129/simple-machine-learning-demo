@@ -17,8 +17,10 @@
             text-align: center
         }
 
-        canvas {
-            user-select: none
+        #coordinate {
+            display: block;
+            margin: 0 auto;
+            background: #efefef
         }
     </style>
 </head>
@@ -26,119 +28,10 @@
 <body>
     <h1>寻找线段散点里的中心点</h1>
     <h2>点击画布区域设置，重新设置散点位置</h2>
-    <canvas id="canvas" width="500" height="500" style="display:block; margin: 0 auto; background: #efefef" onselectstart="return false"></canvas>
-    <script>
-        (function () {
-            var canvas = document.getElementById('canvas')
-            var ctx = canvas.getContext('2d')
+    <canvas id="coordinate" width="500" height="500"></canvas>
 
-            canvas.width = Math.min(window.innerWidth - 20, 500)
-
-            function generate_random_numbers_around_target_number(target, amount, range) {
-                var numbers = []
-                for (var i = 0; i < amount; i++) {
-                    var number = target + range * (Math.random() - 0.5)
-                    numbers.push(number)
-                }
-                return numbers
-            }
-
-            var target = Math.ceil(1 + 8 * Math.random())
-            var numbers = generate_random_numbers_around_target_number(target, 50, 2)
-            var interval = canvas.width / 10 // 坐标间隔
-            var model = 10 * Math.random()
-            var learningRate = 0.01
-            var dataIndex = 0
-
-            function learning(output, labeled) {
-                /**
-                 * Error = 1 / 2 * Math.pow(labeled - output, 2)
-                 * dE = labeled - output
-                */
-                var dE = labeled - output
-                /**
-                 * y = target - x
-                 * x = target - y
-                 * dX = -1
-                 */
-                var dX = -1
-                var gradient = dE / dX
-                var nextModel = model + learningRate * -gradient
-                return nextModel
-            }
-
-            function training() {
-                var index = dataIndex++
-                dataIndex = dataIndex >= numbers.length ? 0 : dataIndex
-                model = learning(model, numbers[dataIndex++])
-            }
-
-            function handleClick(event) {
-                var clientRect = canvas.getBoundingClientRect()
-                target = (event.clientX - clientRect.left) / interval
-                numbers = generate_random_numbers_around_target_number(target, 50, 2)
-            }
-
-            // set custom training data
-            canvas.addEventListener('click', handleClick)
-
-            function draw(f) {
-                ctx.save()
-                f()
-                ctx.restore()
-            }
-
-            function drawing() {
-                ctx.save()
-                ctx.clearRect(0, 0, canvas.width, canvas.height)
-                // draw baseline
-                ctx.beginPath()
-                ctx.moveTo(0, canvas.height / 2)
-                ctx.lineTo(canvas.width, canvas.height / 2)
-                ctx.strokeStyle = 'blue'
-                ctx.stroke()
-
-                // draw x axis
-                for (var i = 0; i * interval <= canvas.width; i++) {
-                    ctx.beginPath()
-                    ctx.strokeStyle = 'blue'
-                    ctx.moveTo(i * interval, canvas.height / 2)
-                    ctx.lineTo(i * interval, canvas.height / 2 - 10)
-                    ctx.stroke()
-                    ctx.fillStyle = '#333'
-                    ctx.fillText(i, i * interval, canvas.height / 2 + 20)
-                }
-
-
-                // draw traning data
-                numbers.forEach(function (number) {
-                    ctx.beginPath()
-                    ctx.arc(number * interval, canvas.height / 2, 3, 0, 2 * Math.PI)
-                    ctx.strokeStyle = '#000'
-                    ctx.stroke()
-                })
-
-                // draw model
-                ctx.beginPath()
-                ctx.arc(model * interval, canvas.height / 2, 3, 0, 2 * Math.PI)
-                ctx.fillStyle = 'red'
-                ctx.fill()
-
-                ctx.restore()
-
-                // training
-                training()
-            }
-
-            function main() {
-                drawing()
-                requestAnimationFrame(main)
-            }
-
-            main()
-
-        })()
-    </script>
+    <script src="../lib/Coordinate.js"></script>
+    <script src="./index.js"></script>
 </body>
 
 </html>
