@@ -1,0 +1,133 @@
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>寻找线段散点里的中心点</title>
+    <style>
+    body {
+        text-align: center
+    }
+    </style>
+</head>
+
+<body>
+    <h1>寻找线段散点里的中心点</h1>
+    <h2>点击画布区域设置，重新设置散点位置</h2>
+    <canvas id="canvas" width="500" height="500" style="display:block; margin: 0 auto; background: #efefef"></canvas>
+    <script>
+        (() => {
+            const canvas = document.getElementById('canvas')
+            const ctx = canvas.getContext('2d')
+
+            const generate_random_numbers_around_target_number = (target, amount = 1, range = 1) => {
+                let numbers = []
+                for (let i = 0; i < amount; i++) {
+                    let number = target + range * (Math.random() - 0.5)
+                    numbers.push(number)
+                }
+                return numbers
+            }
+
+            let target = Math.ceil(1 + 8 * Math.random())
+            let numbers = generate_random_numbers_around_target_number(target, 50, 2)
+            let interval = 50 // 坐标间隔
+            let model = 10 * Math.random()
+            let learningRate = 0.01
+            let dataIndex = 0
+
+            const learning = (output, labeled) => {
+                /**
+                 * Error = 1 / 2 * Math.pow(labeled - output, 2)
+                 * dE = labeled - output
+                */
+                let dE = labeled - output
+                /**
+                 * y = target - x
+                 * x = target - y
+                 * dX = -1
+                 */
+                let dX = -1
+                let gradient = dE / dX
+                let nextModel = model + learningRate * -gradient
+                return nextModel
+            }
+
+            const training = () => {
+                let index = dataIndex++
+                dataIndex = dataIndex >= numbers.length ? 0 : dataIndex
+                model = learning(model, numbers[dataIndex++])
+            }
+
+            // set custom training data
+            canvas.addEventListener('click', event => {
+                let clientRect = canvas.getBoundingClientRect()
+                target = (event.clientX - clientRect.left) / 50
+                numbers = generate_random_numbers_around_target_number(target, 50, 2)
+            })
+
+            const draw = f => {
+                ctx.save()
+                f()
+                ctx.restore()
+            }
+
+            const drawing = () => {
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+                // draw baseline
+                draw(() => {
+                    ctx.beginPath()
+                    ctx.moveTo(0, canvas.height / 2)
+                    ctx.lineTo(canvas.width, canvas.height / 2)
+                    ctx.strokeStyle = 'blue'
+                    ctx.stroke()
+                })
+
+                // draw x axis
+                draw(() => {
+                    for (let i = 0; i * interval <= canvas.width; i++) {
+                        ctx.beginPath()
+                        ctx.strokeStyle = 'blue'
+                        ctx.moveTo(i * interval, canvas.height / 2)
+                        ctx.lineTo(i * interval, canvas.height / 2 - 10)
+                        ctx.stroke()
+                        ctx.fillStyle = '#333'
+                        ctx.fillText(i, i * interval, canvas.height / 2 + 20)
+                    }
+                })
+
+                // draw traning data
+                numbers.forEach(number => {
+                    draw(() => {
+                        ctx.beginPath()
+                        ctx.arc(number * interval, canvas.height / 2, 3, 0, 2 * Math.PI)
+                        ctx.strokeStyle = '#000'
+                        ctx.stroke()
+                    })
+                })
+
+                // draw model
+                draw(() => {
+                    ctx.beginPath()
+                    ctx.arc(model * 50, canvas.height / 2, 3, 0, 2 * Math.PI)
+                    ctx.fillStyle = 'red'
+                    ctx.fill()
+                })
+
+                // training
+                training()
+            }
+
+            const main = () => {
+                drawing()
+                requestAnimationFrame(main)
+            }
+
+            main()
+
+        })()
+    </script>
+</body>
+
+</html>
