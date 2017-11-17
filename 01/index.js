@@ -1,6 +1,6 @@
 (function() {
   var canvas = document.getElementById("coordinate");
-  canvas.width = Math.min(window.innerWidth - 20, 500);
+  canvas.width = Math.min(window.screen.width - 20, 500);
 
   var coordinate = new Coordinate(canvas);
   var interval = canvas.width / 10; // 坐标间隔
