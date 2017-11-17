@@ -6,9 +6,14 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>寻找线段散点里的中心点</title>
     <style>
-        body {
+        html, body {
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
             text-align: center
         }
+
     </style>
 </head>
 
@@ -20,6 +25,8 @@
         (function () {
             var canvas = document.getElementById('canvas')
             var ctx = canvas.getContext('2d')
+            
+            canvas.width = Math.min(window.innerWidth - 20, 500)
 
             function generate_random_numbers_around_target_number(target, amount, range) {
                 var numbers = []
@@ -32,7 +39,7 @@
 
             var target = Math.ceil(1 + 8 * Math.random())
             var numbers = generate_random_numbers_around_target_number(target, 50, 2)
-            var interval = 50 // 坐标间隔
+            var interval = canvas.width / 10 // 坐标间隔
             var model = 10 * Math.random()
             var learningRate = 0.01
             var dataIndex = 0
@@ -62,7 +69,7 @@
 
             function handleClick(event) {
                 var clientRect = canvas.getBoundingClientRect()
-                target = (event.clientX - clientRect.left) / 50
+                target = (event.clientX - clientRect.left) / interval
                 numbers = generate_random_numbers_around_target_number(target, 50, 2)
             }
 
@@ -107,7 +114,7 @@
 
                 // draw model
                 ctx.beginPath()
-                ctx.arc(model * 50, canvas.height / 2, 3, 0, 2 * Math.PI)
+                ctx.arc(model * interval, canvas.height / 2, 3, 0, 2 * Math.PI)
                 ctx.fillStyle = 'red'
                 ctx.fill()
 
