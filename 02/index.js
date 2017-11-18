@@ -35,10 +35,10 @@
   var dataIndex = 0;
 
   /**
-   * data: (x, y)
-   * function: n = x + y
-   * x = n - y => dX = -1
-   * y = n - x => dY = -1
+   * input: [x, y] => [x + w1, y + w2]  => output: [outputX, outputY]
+   * loss function: [(targetX - outputX)^2 / 2, (targetY - outputY)^2]
+   * dE: [targetX - outputX, targetY - outputY]
+   * dW: [-1, -1]
    */
   function learning(output, labeled) {
     var dEX = labeled.x - output.x;

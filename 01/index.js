@@ -25,18 +25,15 @@
   var dataIndex = 0;
 
   /**
-   * data: (x, 0)
-   * function: n = x + 0
-   * x = n - y -> dX = -1
+   * input: [x] => x + w  => output: [y]
+   * loss function: (t - y)^2 / 2
+   * dE: t - y
+   * dW: -1
    */
   function learning(output, labeled) {
-    /**
-         * Error = 1 / 2 * Math.pow(labeled - output, 2)
-         * dE = labeled - output
-        */
     var dE = labeled - output;
-    var dX = -1;
-    var gradient = dE / dX;
+    var dW = -1;
+    var gradient = dE / dW;
     var nextModel = model + learningRate * -gradient;
     return nextModel;
   }
