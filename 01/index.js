@@ -1,6 +1,6 @@
 (function() {
   var canvas = document.getElementById("coordinate");
-  canvas.width = Math.min(window.screen.width - 20, 500);
+  canvas.width = canvas.height = Math.min(window.screen.width - 20, 500);
 
   var coordinate = new Coordinate(canvas);
   var interval = canvas.width / 10; // 坐标间隔
@@ -10,32 +10,31 @@
     interval: interval
   });
 
-  function generate_random_numbers_around_target_number(target, amount, range) {
-    var numbers = [];
+  function generateTrainingData(target, amount, range) {
+    var trainingData = [];
     for (var i = 0; i < amount; i++) {
-      var number = target + range * (Math.random() - 0.5);
-      numbers.push(number);
+      trainingData.push(target + range * (Math.random() - 0.5));
     }
-    return numbers;
+    return trainingData;
   }
 
   var target = 9 * Math.random();
-  var numbers = generate_random_numbers_around_target_number(target, 50, 2);
+  var trainingData = generateTrainingData(target, 50, 2);
   var model = 10 * Math.random();
   var learningRate = 0.01;
   var dataIndex = 0;
 
+  /**
+   * data: (x, 0)
+   * function: n = x + 0
+   * x = n - y -> dX = -1
+   */
   function learning(output, labeled) {
     /**
          * Error = 1 / 2 * Math.pow(labeled - output, 2)
          * dE = labeled - output
         */
     var dE = labeled - output;
-    /**
-         * y = target - x
-         * x = target - y
-         * dX = -1
-         */
     var dX = -1;
     var gradient = dE / dX;
     var nextModel = model + learningRate * -gradient;
@@ -44,15 +43,15 @@
 
   function training() {
     var index = dataIndex++;
-    dataIndex = dataIndex >= numbers.length ? 0 : dataIndex;
-    model = learning(model, numbers[dataIndex++]);
+    dataIndex = dataIndex >= trainingData.length ? 0 : dataIndex;
+    model = learning(model, trainingData[dataIndex++]);
   }
 
   function handleClick(event) {
     var origin = coordinate.getOrigin();
     var clientRect = canvas.getBoundingClientRect();
     target = (event.clientX - clientRect.left - origin.x) / interval;
-    numbers = generate_random_numbers_around_target_number(target, 50, 2);
+    trainingData = generateTrainingData(target, 50, 2);
   }
 
   // set custom training data
@@ -65,7 +64,7 @@
     coordinate.drawAxis();
 
     // 将生成的随机数字，映射成坐标
-    var dots = numbers.map(function(number) {
+    var dots = trainingData.map(function(number) {
       return {
         x: number,
         y: 0
