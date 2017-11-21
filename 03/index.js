@@ -55,8 +55,6 @@
       return;
     }
 
-    console.log({ gradientA, gradientB });
-
     var learningRate = 0.02;
     this.a += learningRate * gradientA;
     this.b += learningRate * gradientB;
