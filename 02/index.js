@@ -41,12 +41,12 @@
    * dW: [-1, -1]
    */
   function learning(output, labeled) {
-    var dEX = labeled.x - output.x;
-    var dEY = labeled.y - output.y;
-    var dX = -1;
-    var dY = -1;
-    var gradientX = dEX / dX;
-    var gradientY = dEY / dY;
+    var dE_dW1 = (labeled.x - output.x) * -1;
+    var dE_dW2 = (labeled.y - output.y) * -1;
+    var dW1_dX = 1;
+    var dW2_dY = 1;
+    var gradientX = dE_dW1 * dW1_dX;
+    var gradientY = dE_dW2 * dW2_dY;
     model.x += learningRate * -gradientX;
     model.y += learningRate * -gradientY;
     return model;
@@ -72,7 +72,7 @@
   canvas.addEventListener("click", handleClick);
 
   function drawing() {
-    coordinate.clear();
+    coordinate.clearWithTrailingEffect();
 
     // draw axis
     coordinate.drawAxis();

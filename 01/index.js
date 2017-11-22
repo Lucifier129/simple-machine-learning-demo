@@ -24,16 +24,10 @@
   var learningRate = 0.01;
   var dataIndex = 0;
 
-  /**
-   * input: [x] => x + w  => output: [y]
-   * loss function: (t - y)^2 / 2
-   * dE: t - y
-   * dW: -1
-   */
   function learning(output, labeled) {
-    var dE = labeled - output;
-    var dW = -1;
-    var gradient = dE / dW;
+    var dE_dY = (labeled - output) * -1;
+    var dY_dW = 1;
+    var gradient = dE_dY * dY_dW;
     var nextModel = model + learningRate * -gradient;
     return nextModel;
   }
@@ -55,7 +49,7 @@
   canvas.addEventListener("click", handleClick);
 
   function drawing() {
-    coordinate.clear();
+    coordinate.clearWithTrailingEffect();
 
     // draw axis
     coordinate.drawAxis();

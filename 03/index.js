@@ -41,9 +41,10 @@
       var input = data.x
       var target = data.y
       var output = this.compute(input);
-      var dE_dY = target - output;
+      var dE_dY = (target - output) * -1;
       var dY_dA = input;
       var dY_dB = 1;
+
       gradientA += dE_dY * dY_dA;
       gradientB += dE_dY * dY_dB;
     }
@@ -56,8 +57,8 @@
     }
 
     var learningRate = 0.02;
-    this.a += learningRate * gradientA;
-    this.b += learningRate * gradientB;
+    this.a += learningRate * -gradientA;
+    this.b += learningRate * -gradientB;
   };
 
   function getRandomNumber(range) {
@@ -97,7 +98,7 @@
   canvas.addEventListener("click", handleClick);
 
   function drawing() {
-    coordinate.clear();
+    coordinate.clearWithTrailingEffect();
 
     // draw axis
     coordinate.drawAxis();
