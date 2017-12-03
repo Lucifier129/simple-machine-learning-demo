@@ -34,19 +34,11 @@
   var learningRate = 0.01;
   var dataIndex = 0;
 
-  /**
-   * input: [x, y] => [x + w1, y + w2]  => output: [outputX, outputY]
-   * loss function: [(targetX - outputX)^2 / 2, (targetY - outputY)^2]
-   * dE: [targetX - outputX, targetY - outputY]
-   * dW: [-1, -1]
-   */
   function learning(output, labeled) {
-    var dE_dW1 = (labeled.x - output.x) * -1;
-    var dE_dW2 = (labeled.y - output.y) * -1;
-    var dW1_dX = 1;
-    var dW2_dY = 1;
-    var gradientX = dE_dW1 * dW1_dX;
-    var gradientY = dE_dW2 * dW2_dY;
+    var dE_dX = (labeled.x - output.x) * -1;
+    var dE_dY = (labeled.y - output.y) * -1;
+    var gradientX = dE_dX;
+    var gradientY = dE_dY;
     model.x += learningRate * -gradientX;
     model.y += learningRate * -gradientY;
     return model;

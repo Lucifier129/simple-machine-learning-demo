@@ -9,58 +9,6 @@
     interval: interval
   });
 
-  function Linear(a, b) {
-    this.a = typeof a === "number" ? a : 1;
-    this.b = typeof b === "number" ? b : 0;
-    this.compute = this.compute.bind(this);
-  }
-
-  Linear.prototype.update = function(a, b) {
-    if (typeof a === "number") {
-      this.a = a;
-    }
-    if (typeof b === "number") {
-      this.b = b;
-    }
-  };
-
-  Linear.prototype.compute = function(x) {
-    return this.a * x + this.b;
-  };
-
-  Linear.prototype.computeWithRandom = function(x, range) {
-    return this.compute(x) + getRandomNumber(range);
-  };
-
-  Linear.prototype.batchTraining = function(list) {
-    var gradientA = 0;
-    var gradientB = 0;
-
-    for (var i = 0; i < list.length; i++) {
-      var data = list[i];
-      var input = data.x
-      var target = data.y
-      var output = this.compute(input);
-      var dE_dY = (target - output) * -1;
-      var dY_dA = input;
-      var dY_dB = 1;
-
-      gradientA += dE_dY * dY_dA;
-      gradientB += dE_dY * dY_dB;
-    }
-
-    gradientA = gradientA / list.length;
-    gradientB = gradientB / list.length;
-
-    if (Math.abs(gradientA) < 0.00001 && Math.abs(gradientB) < 0.00001) {
-      return;
-    }
-
-    var learningRate = 0.02;
-    this.a += learningRate * -gradientA;
-    this.b += learningRate * -gradientB;
-  };
-
   function getRandomNumber(range) {
     return range * 2 * (Math.random() - 0.5);
   }

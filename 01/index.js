@@ -24,10 +24,10 @@
   var learningRate = 0.01;
   var dataIndex = 0;
 
+  // x = a
   function learning(output, labeled) {
-    var dE_dY = (labeled - output) * -1;
-    var dY_dW = 1;
-    var gradient = dE_dY * dY_dW;
+    var dE_dA = (labeled - output) * -1;
+    var gradient = dE_dA;
     var nextModel = model + learningRate * -gradient;
     return nextModel;
   }
