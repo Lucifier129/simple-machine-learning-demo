@@ -78,8 +78,13 @@
     //     // })
     //     // .slice(0, 50)
     // );
-    perceptron.batchTraining(shuffle(trainingData[0].map(coor2Array)).slice(0, 50), 0);
-    perceptron.batchTraining(shuffle(trainingData[1].map(coor2Array)).slice(0, 50), 1);
+
+
+    perceptron.training(trainingData[0].map(coor2Array)[Math.floor(trainingData[0].length * Math.random())], 0)
+    perceptron.training(trainingData[1].map(coor2Array)[Math.floor(trainingData[1].length * Math.random())], 1)
+
+    // perceptron.batchTraining(shuffle(trainingData[0].map(coor2Array)).slice(0, 50), 0);
+    // perceptron.batchTraining(shuffle(trainingData[1].map(coor2Array)).slice(0, 50), 1);
     requestAnimationFrame(drawing);
   }
 
