@@ -35,7 +35,7 @@
     generateTrainingData(200, 3)
   ];
   var linear = new Linear(1, 0, 0.02);
-  var perceptron = new Perceptron(1, 0.01);
+  var perceptron = new Perceptron(2, 0.01);
 
   function handleClick(event) {
     trainingData = [generateTrainingData(200, 3), generateTrainingData(200, 3)];
@@ -53,12 +53,12 @@
     // draw traning data
     coordinate.drawDots(trainingData[0], {
       type: "stroke",
-      color: "red",
+      color: "yellow",
       radius: 2
     });
     coordinate.drawDots(trainingData[1], {
       type: "stroke",
-      color: "blue",
+      color: "green",
       radius: 2
     });
 
@@ -67,7 +67,7 @@
     // });
 
     coordinate.drawLineByFunction(perceptron.computeLinear, {
-      color: "#00fddf"
+      color: "red"
     });
 
     // linear.batchTraining(
@@ -79,11 +79,13 @@
     //     // .slice(0, 50)
     // );
 
-    var dotA = trainingData[0].map(coor2Array)[Math.floor(trainingData[0].length * Math.random())]
-    var dotB = trainingData[1].map(coor2Array)[Math.floor(trainingData[1].length * Math.random())]
-
-    perceptron.training(dotA, 1)
-    perceptron.training(dotB, -1)
+    for (var i = 0; i < 20; i++) {
+      var dotA = trainingData[0].map(coor2Array)[Math.floor(trainingData[0].length * Math.random())]
+      var dotB = trainingData[1].map(coor2Array)[Math.floor(trainingData[1].length * Math.random())]
+  
+      perceptron.training(dotA, 1)
+      perceptron.training(dotB, -1)
+    }
 
     var toObj = function(target) {
       return function(inputs) {
@@ -93,8 +95,8 @@
         }
       }
     }
-    var listA = trainingData[0].map(coor2Array).map(toObj(0))
-    var listB = trainingData[1].map(coor2Array).map(toObj(1))
+    var listA = trainingData[0].map(coor2Array).map(toObj(1))
+    var listB = trainingData[1].map(coor2Array).map(toObj(-1))
     var result = perceptron.test(listA.concat(listB))
 
     console.log(result)
