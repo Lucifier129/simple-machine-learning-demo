@@ -35,7 +35,7 @@
     generateTrainingData(200, 3)
   ];
   var linear = new Linear(1, 0, 0.02);
-  var perceptron = new Perceptron(2, 0.0001);
+  var perceptron = new Perceptron(1, 0.01);
 
   function handleClick(event) {
     trainingData = [generateTrainingData(200, 3), generateTrainingData(200, 3)];
@@ -79,12 +79,26 @@
     //     // .slice(0, 50)
     // );
 
+    var dotA = trainingData[0].map(coor2Array)[Math.floor(trainingData[0].length * Math.random())]
+    var dotB = trainingData[1].map(coor2Array)[Math.floor(trainingData[1].length * Math.random())]
 
-    perceptron.training(trainingData[0].map(coor2Array)[Math.floor(trainingData[0].length * Math.random())], 0)
-    perceptron.training(trainingData[1].map(coor2Array)[Math.floor(trainingData[1].length * Math.random())], 1)
+    perceptron.training(dotA, 1)
+    perceptron.training(dotB, -1)
 
-    // perceptron.batchTraining(shuffle(trainingData[0].map(coor2Array)).slice(0, 50), 0);
-    // perceptron.batchTraining(shuffle(trainingData[1].map(coor2Array)).slice(0, 50), 1);
+    var toObj = function(target) {
+      return function(inputs) {
+        return {
+          inputs: inputs,
+          target: target,
+        }
+      }
+    }
+    var listA = trainingData[0].map(coor2Array).map(toObj(0))
+    var listB = trainingData[1].map(coor2Array).map(toObj(1))
+    var result = perceptron.test(listA.concat(listB))
+
+    console.log(result)
+
     requestAnimationFrame(drawing);
   }
 
