@@ -13,32 +13,49 @@
     return range * 2 * (Math.random() - 0.5);
   }
 
-  function generateTrainingData(amount, range) {
-    var target = {
-      x: getRandomNumber(15),
-      y: getRandomNumber(15)
-    };
-    var data = [];
-    for (var i = 0; i < amount; i++) {
-      var x = target.x + getRandomNumber(range);
-      var y = target.y + getRandomNumber(range);
-      data.push({
-        x: x,
-        y: y
-      });
+  // 生成不均衡的两类点
+  function generateTrainingData() {
+    var linear = new Linear(getRandomNumber(5), getRandomNumber(10));
+    var data = [[], []];
+    var getDot = function(i) {
+      var x = i + getRandomNumber(20);
+      var y = linear.compute(x)
+      
+      if (Math.random() > 0.7) {
+        var range = 0.5 + Math.abs(getRandomNumber(20))
+        y += range
+        data[1].push({ x: x, y: y })
+      } else {
+        if (Math.random() > 0.9) {
+          var range = 0.5 + Math.abs(getRandomNumber(5))
+          y -= range
+          data[0].push({ x: x, y: y })
+        }
+      }
+    }
+    for (var i = -15; i < 15; i += 0.05) {
+      if (Math.random() > 0.7) {
+        // 取 70% 的点
+        continue;
+      }
+      if (Math.abs(i) < 0.0001) {
+        // 避开临近 0 点的值，容易梯度爆炸
+        continue;
+      }
+      
+      for (var ii = 0; ii < 5; ii += 1) {
+        getDot(i)
+      }
+
     }
     return data;
   }
 
-  var trainingData = [
-    generateTrainingData(200, 3),
-    generateTrainingData(200, 3)
-  ];
-  var linear = new Linear(1, 0, 0.02);
+  var trainingData = generateTrainingData();
   var perceptron = new Perceptron(2, 0.01);
 
   function handleClick(event) {
-    trainingData = [generateTrainingData(200, 3), generateTrainingData(200, 3)];
+    trainingData = generateTrainingData()
   }
 
   // set custom training data
@@ -53,7 +70,7 @@
     // draw traning data
     coordinate.drawDots(trainingData[0], {
       type: "stroke",
-      color: "yellow",
+      color: "brown",
       radius: 2
     });
     coordinate.drawDots(trainingData[1], {
@@ -62,56 +79,26 @@
       radius: 2
     });
 
-    // coordinate.drawLineByFunction(linear.compute, {
-    //   color: "green"
-    // });
-
     coordinate.drawLineByFunction(perceptron.computeLinear, {
       color: "red"
     });
 
-    // linear.batchTraining(
-    //   trainingData[0]
-    //     .concat(trainingData[1])
-    //     // .sort(function() {
-    //     //   return Math.random() - 0.5;
-    //     // })
-    //     // .slice(0, 50)
-    // );
+    var batches = 20;
+    for (var i = 0; i < batches; i++) {
+      var randomIndexA = Math.floor(trainingData[0].length * Math.random());
+      var randomIndexB = Math.floor(trainingData[1].length * Math.random());
+      var dotA = coor2Array(trainingData[0][randomIndexA]);
+      var dotB = coor2Array(trainingData[1][randomIndexB]);
 
-    for (var i = 0; i < 20; i++) {
-      var dotA = trainingData[0].map(coor2Array)[Math.floor(trainingData[0].length * Math.random())]
-      var dotB = trainingData[1].map(coor2Array)[Math.floor(trainingData[1].length * Math.random())]
-  
-      perceptron.training(dotA, 1)
-      perceptron.training(dotB, -1)
+      perceptron.training(dotA, 1);
+      perceptron.training(dotB, 0);
     }
-
-    var toObj = function(target) {
-      return function(inputs) {
-        return {
-          inputs: inputs,
-          target: target,
-        }
-      }
-    }
-    var listA = trainingData[0].map(coor2Array).map(toObj(1))
-    var listB = trainingData[1].map(coor2Array).map(toObj(-1))
-    var result = perceptron.test(listA.concat(listB))
-
-    console.log(result)
 
     requestAnimationFrame(drawing);
   }
 
   function coor2Array(coor) {
     return [coor.x, coor.y];
-  }
-
-  function shuffle(list) {
-    return list.sort(function() {
-      return Math.random() - 0.5
-    })
   }
 
   drawing();
