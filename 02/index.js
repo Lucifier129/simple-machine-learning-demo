@@ -47,7 +47,7 @@
   function training() {
     var index = dataIndex++;
     dataIndex = dataIndex >= trainingData.length ? 0 : dataIndex;
-    model = learning(model, trainingData[dataIndex++]);
+    model = learning(model, trainingData[dataIndex]);
   }
 
   function handleClick(event) {
